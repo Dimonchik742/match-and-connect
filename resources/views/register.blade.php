@@ -100,35 +100,68 @@
                                     placeholder="Напишіть пару слів..."></textarea>
                             </div>
 
-                            <h6 class="text-muted small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">Оберіть
-                                ваші інтереси</h6>
+                            <div class="mb-5">
+                                <h6 class="form-label text-muted small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">Оберіть ваші інтереси</h6>
+                                
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    @foreach($allInterests as $index => $interest)
+                                        @if($index < 5)
+                                            <div>
+                                                <input type="checkbox" class="btn-check" name="interests[]" value="{{ $interest->id }}" 
+                                                       id="interest_{{ $interest->id }}" 
+                                                       {{ isset($user) && $user->interests->contains($interest->id) ? 'checked' : '' }}>
+                                                <label class="btn btn-outline-secondary rounded-pill px-3 py-2" for="interest_{{ $interest->id }}" 
+                                                       style="font-size: 0.85rem; border-color: #444; color: #ccc;">
+                                                    {{ $interest->name }}
+                                                </label>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
 
-                            <div class="d-flex flex-wrap gap-2 mb-5">
-                                @php
-                                    $defaultInterests = ['Python', 'Java', 'The Witcher 3', 'Збірка ПК'];
-                                @endphp
-
-                                @foreach($defaultInterests as $index => $interest)
-                                    <div>
-                                        <input type="checkbox" class="btn-check" name="interests[]" value="{{ $interest }}"
-                                            id="int{{ $index }}">
-                                        <label class="btn btn-outline-secondary rounded-pill px-3 py-2" for="int{{ $index }}"
-                                            style="font-size: 0.85rem; border-color: #444; color: #ccc;">
-                                            {{ $interest }}
-                                        </label>
+                                <div class="collapse" id="collapseInterests">
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        @foreach($allInterests as $index => $interest)
+                                            @if($index >= 5)
+                                                <div>
+                                                    <input type="checkbox" class="btn-check" name="interests[]" value="{{ $interest->id }}" 
+                                                           id="interest_{{ $interest->id }}"
+                                                           {{ isset($user) && $user->interests->contains($interest->id) ? 'checked' : '' }}>
+                                                    <label class="btn btn-outline-secondary rounded-pill px-3 py-2" for="interest_{{ $interest->id }}" 
+                                                           style="font-size: 0.85rem; border-color: #444; color: #ccc;">
+                                                        {{ $interest->name }}
+                                                    </label>
+                                                </div>
+                                            @endif
+                                        @endforeach
                                     </div>
-                                @endforeach
+                                </div>
+
+                                @if(count($allInterests) > 5)
+                                    <button class="btn btn-sm w-100 rounded-pill mt-2 d-flex justify-content-center align-items-center transition-all" 
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#collapseInterests" aria-expanded="false" 
+                                            style="background-color: transparent; border: 1px dashed #444; color: #a0a0a0; font-weight: 600;"
+                                            onclick="this.innerText = this.getAttribute('aria-expanded') === 'true' ? 'Сховати' : 'Показати всі інтереси'">
+                                        Показати всі інтереси
+                                    </button>
+                                @endif
+
+                                <style>
+                                    .btn-check:checked + .btn-outline-secondary { 
+                                        background-color: rgba(187, 134, 252, 0.15) !important; 
+                                        border-color: #bb86fc !important; 
+                                        color: #bb86fc !important; 
+                                        font-weight: 600; 
+                                    }
+                                    .transition-all {
+                                        transition: all 0.3s ease;
+                                    }
+                                    button[data-bs-toggle="collapse"]:hover {
+                                        border-color: #bb86fc !important;
+                                        color: #bb86fc !important;
+                                    }
+                                </style>
                             </div>
-
-                            <style>
-                                .btn-check:checked+.btn-outline-secondary {
-                                    background-color: rgba(187, 134, 252, 0.15) !important;
-                                    border-color: #bb86fc !important;
-                                    color: #bb86fc !important;
-                                    font-weight: 600;
-                                }
-                            </style>
-
                             <div class="d-flex justify-content-between pt-3" style="border-top: 1px solid #2a2a2a;">
                                 <button type="button" class="btn btn-dark rounded-pill px-4"
                                     onclick="prevStep()">Назад</button>

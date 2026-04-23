@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
 
+
 class MatchController extends Controller
 {
     
@@ -51,10 +52,13 @@ class MatchController extends Controller
     }
     
     
-    public function registerForm()
-    {
-        return view('register');
-    }
+    public function registerForm() {
+    // Дістаємо всі інтереси з бази даних
+    $allInterests = Interest::all(); 
+
+    // Передаємо їх у шаблон register
+    return view('register', compact('allInterests'));
+}
 
     public function registerSubmit(Request $request)
     {
@@ -309,4 +313,6 @@ class MatchController extends Controller
         // Якщо хтось хитрий намагається видалити чуже повідомлення
         abort(403, 'Ви не можете видалити чуже повідомлення.');
     }
+
+    
 }

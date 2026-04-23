@@ -64,27 +64,63 @@
                         </div>
 
                         <div class="mb-5">
-                            <label class="form-label text-muted small fw-bold text-uppercase mb-3"
-                                style="letter-spacing: 1px;">Ваші інтереси</label>
-                            <div class="d-flex flex-wrap gap-2">
-                                @foreach($allInterests as $interest)
-                                    <div>
-                                        <input type="checkbox" class="btn-check" name="interests[]" value="{{ $interest->id }}"
-                                            id="interest_{{ $interest->id }}" {{ $user->interests->contains($interest->id) ? 'checked' : '' }}>
-                                        <label class="btn btn-outline-secondary rounded-pill px-3 py-2"
-                                            for="interest_{{ $interest->id }}"
-                                            style="font-size: 0.85rem; border-color: #444; color: #ccc;">
-                                            {{ $interest->name }}
-                                        </label>
-                                    </div>
+                            <h6 class="form-label text-muted small fw-bold text-uppercase mb-3" style="letter-spacing: 1px;">Оберіть ваші інтереси</h6>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                @foreach($allInterests as $index => $interest)
+                                    @if($index < 5)
+                                        <div>
+                                            <input type="checkbox" class="btn-check" name="interests[]" value="{{ $interest->id }}" 
+                                                id="interest_{{ $interest->id }}" 
+                                                {{ isset($user) && $user->interests->contains($interest->id) ? 'checked' : '' }}>
+                                            <label class="btn btn-outline-secondary rounded-pill px-3 py-2" for="interest_{{ $interest->id }}" 
+                                                style="font-size: 0.85rem; border-color: #444; color: #ccc;">
+                                                {{ $interest->name }}
+                                            </label>
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
+
+                            <div class="collapse" id="collapseInterests">
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    @foreach($allInterests as $index => $interest)
+                                        @if($index >= 5)
+                                            <div>
+                                                <input type="checkbox" class="btn-check" name="interests[]" value="{{ $interest->id }}" 
+                                                    id="interest_{{ $interest->id }}"
+                                                    {{ isset($user) && $user->interests->contains($interest->id) ? 'checked' : '' }}>
+                                                <label class="btn btn-outline-secondary rounded-pill px-3 py-2" for="interest_{{ $interest->id }}" 
+                                                    style="font-size: 0.85rem; border-color: #444; color: #ccc;">
+                                                    {{ $interest->name }}
+                                                </label>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            @if(count($allInterests) > 5)
+                                <button class="btn btn-sm w-100 rounded-pill mt-2 d-flex justify-content-center align-items-center transition-all" 
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapseInterests" aria-expanded="false" 
+                                        style="background-color: transparent; border: 1px dashed #444; color: #a0a0a0; font-weight: 600;"
+                                        onclick="this.innerText = this.getAttribute('aria-expanded') === 'true' ? 'Сховати' : 'Показати всі інтереси'">
+                                    Показати всі інтереси ⬇️
+                                </button>
+                            @endif
+
                             <style>
-                                .btn-check:checked+.btn-outline-secondary {
-                                    background-color: rgba(187, 134, 252, 0.15) !important;
+                                .btn-check:checked + .btn-outline-secondary { 
+                                    background-color: rgba(187, 134, 252, 0.15) !important; 
+                                    border-color: #bb86fc !important; 
+                                    color: #bb86fc !important; 
+                                    font-weight: 600; 
+                                }
+                                .transition-all {
+                                    transition: all 0.3s ease;
+                                }
+                                button[data-bs-toggle="collapse"]:hover {
                                     border-color: #bb86fc !important;
                                     color: #bb86fc !important;
-                                    font-weight: 600;
                                 }
                             </style>
                         </div>

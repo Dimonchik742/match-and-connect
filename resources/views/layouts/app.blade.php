@@ -160,7 +160,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/search">Match & Connect</a>
+            <a class="navbar-brand fw-bold" href="{{ Auth::check() ? '/search' : '/' }}">Match & Connect</a>
 
             <button class="navbar-toggler shadow-none" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
