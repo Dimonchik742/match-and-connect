@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MatchController;
 
+// Головна сторінка (Вітальна)
+Route::get('/', function () {
+    return view('welcome_page');
+});
+
 // Відкриті маршрути (для всіх)
 Route::get('/login', [MatchController::class, 'loginForm'])->name('login'); // Дали ім'я маршруту
 Route::post('/login', [MatchController::class, 'loginSubmit']);
