@@ -180,11 +180,20 @@ class MatchController extends Controller
             'content' => 'required|string|max:1000'
         ]);
 
-        Message::create([
+        // 1. Присвоюємо результат створення у змінну $message
+        $message = Message::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $receiver_id,
             'content' => $validated['content'] 
         ]);
+
+        // 2. Викликаємо подію. Вона автоматично полетить у WebSocket!
+        \App\Events\MessageSent::dispatch($message);
+
+        // ДОДАЄМО ЦЕ: Якщо запит фоновий (AJAX) - повертаємо просто JSON
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
 
         return back();
     }
@@ -301,7 +310,7 @@ class MatchController extends Controller
 
     public function deleteMessage($id)
     {
-        $message = \App\Models\Message::findOrFail($id);
+        $message = Message::findOrFail($id);
         $user = Auth::user();
 
         // Перевірка безпеки: чи це моє повідомлення, АБО чи я адмін?
