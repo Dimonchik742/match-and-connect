@@ -155,9 +155,13 @@
     <script>
         window.chatConfig = {
             receiverId: {{ $receiver->id }},
-            messageCount: {{ $messages->count() }}
-        };
+            messageCount: {{ $messages->count() }},
+            currentUserId: {{ Auth::id() }} // <--- ДОДАЙ ОЦЕЙ РЯДОК
+                    };
     </script>
+
+    <!-- Твій app.js з налаштуваннями WebSockets -->
+    @vite(['resources/js/app.js'])
 
     <script src="{{ asset('js/chat.js') }}"></script>
 
