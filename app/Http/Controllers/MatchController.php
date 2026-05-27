@@ -86,12 +86,11 @@ class MatchController extends Controller
             'photo' => $photoPath,
         ]);
 
-        $interestIds = [];
-        foreach ($validatedData['interests'] as $interestName) {
-            $interest = Interest::firstOrCreate(['name' => $interestName]);
-            $interestIds[] = $interest->id;
+        // Перевіряємо, чи взагалі були обрані якісь інтереси
+        if (!empty($validatedData['interests'])) {
+            // Метод attach чудово розуміє масив з ID, який прилітає напряму з форми
+            $user->interests()->attach($validatedData['interests']);
         }
-        $user->interests()->attach($interestIds);
 
         Auth::login($user);
 
