@@ -6,17 +6,17 @@
     <div class="row justify-content-center mt-4">
         <div class="col-lg-10 col-xl-8">
 
-            <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px; background: #1e1e1e;">
+            <div class="glass-card mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
 
                         <div class="flex-shrink-0 mb-3 mb-md-0">
                             @if($user->photo)
                                 <img src="/storage/{{ $user->photo }}" class="rounded-circle object-fit-cover shadow"
-                                    style="width: 160px; height: 160px; border: 3px solid #2d2d2d;" alt="Фото">
+                                    style="width: 160px; height: 160px; border: 3px solid #bb86fc;" alt="Фото">
                             @else
                                 <div class="bg-dark rounded-circle d-flex justify-content-center align-items-center text-muted shadow"
-                                    style="width: 160px; height: 160px; border: 3px solid #2d2d2d; font-size: 3rem;">
+                                    style="width: 160px; height: 160px; border: 3px solid #bb86fc; font-size: 3rem;">
                                     👤
                                 </div>
                             @endif
@@ -45,7 +45,18 @@
                                 </div>
                             </div>
 
-                            <div class="bg-dark p-3 rounded-3 mt-2" style="background-color: #262626 !important;">
+                            <!-- Прогрес-бар заповненості профілю -->
+                            <div class="mt-3 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">ЗАПОВНЕНІСТЬ ПРОФІЛЮ</small>
+                                    <small class="text-primary fw-bold">{{ $user->completeness }}%</small>
+                                </div>
+                                <div class="progress" style="height: 6px; background-color: #2d2d2d;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $user->completeness }}%; box-shadow: 0 0 10px rgba(187, 134, 252, 0.8);" aria-valuenow="{{ $user->completeness }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-dark p-3 rounded-3 mt-2" style="background-color: rgba(0,0,0,0.3) !important; border: 1px solid #333;">
                                 <h6 class="text-uppercase fw-bold text-muted small mb-2" style="letter-spacing: 1px;">Про
                                     мене</h6>
                                 <p class="mb-0 text-light-50 small">
@@ -57,7 +68,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm" style="border-radius: 20px; background: #1e1e1e;">
+            <div class="glass-card">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <h6 class="text-uppercase fw-bold text-muted mb-0 small" style="letter-spacing: 1px;">Інтереси та

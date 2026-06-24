@@ -155,6 +155,7 @@
     <script>
         window.chatConfig = {
             receiverId: {{ $receiver->id }},
+            currentUserId: {{ Auth::id() }},
             messageCount: {{ $messages->count() }}
         };
     </script>

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const receiverId = window.chatConfig.receiverId;
-    let currentMessageCount = window.chatConfig.messageCount;
+    const currentUserId = window.chatConfig.currentUserId;
     const chatBox = document.getElementById("chat-box");
 
     // Прокрутка вниз при завантаженні
@@ -66,56 +66,58 @@ document.addEventListener("DOMContentLoaded", function () {
         contextMenu.style.display = "block";
     }
 
-    // --- AJAX ОНОВЛЕННЯ ЧАТУ (З НОВИМ ДИЗАЙНОМ) ---
-    setInterval(function () {
-        fetch(`/api/chat/${receiverId}/messages`)
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.messages.length > currentMessageCount) {
-                    currentMessageCount = data.messages.length;
-                    chatBox.innerHTML = "";
+    // --- WEBSOCKETS LARAVEL ECHO ---
+    function appendMessage(msg) {
+        let date = new Date(msg.created_at || Date.now());
+        let time = date.getHours().toString().padStart(2, "0") + ":" + date.getMinutes().toString().padStart(2, "0");
 
-                    data.messages.forEach((msg) => {
-                        let isMe = msg.sender_id === data.current_user_id;
-                        let date = new Date(msg.created_at);
-                        let time =
-                            date.getHours().toString().padStart(2, "0") +
-                            ":" +
-                            date.getMinutes().toString().padStart(2, "0");
+        let isMe = msg.sender_id == currentUserId;
+        let html = "";
+        
+        // Remove empty state if exists
+        const emptyState = document.querySelector('.h-100.justify-content-center');
+        if (emptyState) emptyState.remove();
 
-                        let html = "";
-                        if (isMe) {
-                            html = `
-                                <div class="d-flex justify-content-end mb-3 pe-1 pt-1">
-                                    <div class="my-message-bubble bg-primary text-dark p-3 shadow-sm"
-                                        style="max-width: 80%; cursor: pointer;" data-message-id="${msg.id}">
-                                        <div style="font-weight: 500; font-size: 0.95rem;">
-                                            ${msg.content}
-                                        </div>
-                                        <div class="text-end mt-1" style="font-size: 0.65rem; opacity: 0.7;">
-                                            ${time}
-                                        </div>
-                                    </div>
-                                </div>`;
-                        } else {
-                            html = `
-                                <div class="d-flex justify-content-start mb-3 pe-1 pt-1">
-                                    <div class="their-message-bubble p-3 shadow-sm" style="max-width: 80%;">
-                                        <div style="font-weight: 400; font-size: 0.95rem;">
-                                            ${msg.content}
-                                        </div>
-                                        <div class="mt-1 text-muted" style="font-size: 0.65rem;">
-                                            ${time}
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }
-                        chatBox.insertAdjacentHTML("beforeend", html);
-                    });
+        if (isMe) {
+            html = `
+                <div class="d-flex justify-content-end mb-3 pe-1 pt-1">
+                    <div class="my-message-bubble bg-primary text-dark p-3 shadow-sm"
+                        style="max-width: 80%; cursor: pointer;" data-message-id="${msg.id}">
+                        <div style="font-weight: 500; font-size: 0.95rem;">
+                            ${msg.content}
+                        </div>
+                        <div class="text-end mt-1" style="font-size: 0.65rem; opacity: 0.7;">
+                            ${time}
+                        </div>
+                    </div>
+                </div>`;
+        } else {
+            html = `
+                <div class="d-flex justify-content-start mb-3 pe-1 pt-1">
+                    <div class="their-message-bubble p-3 shadow-sm" style="max-width: 80%;">
+                        <div style="font-weight: 400; font-size: 0.95rem;">
+                            ${msg.content}
+                        </div>
+                        <div class="mt-1 text-muted" style="font-size: 0.65rem;">
+                            ${time}
+                        </div>
+                    </div>
+                </div>`;
+        }
+        chatBox.insertAdjacentHTML("beforeend", html);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-                    chatBox.scrollTop = chatBox.scrollHeight;
+    // Слухаємо події через Laravel Echo
+    if (window.Echo) {
+        window.Echo.private('App.Models.User.' + currentUserId)
+            .listen('MessageSent', (e) => {
+                // Тільки якщо це повідомлення від юзера, з яким зараз відкритий чат
+                if (e.message.sender_id == receiverId) {
+                    appendMessage(e.message);
                 }
-            })
-            .catch((error) => console.error("Помилка AJAX:", error));
-    }, 3000);
+            });
+    } else {
+        console.warn("Laravel Echo не ініціалізовано. WebSockets недоступні.");
+    }
 });

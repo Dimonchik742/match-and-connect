@@ -65,4 +65,33 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function likers()
+    {
+        return $this->hasMany(Like::class, 'liked_user_id');
+    }
+
+    public function getCompletenessAttribute()
+    {
+        $score = 25; // Базові обов'язкові поля
+        
+        if (!empty($this->bio)) {
+            $score += 25;
+        }
+        
+        if (!empty($this->photo)) {
+            $score += 25;
+        }
+        
+        if ($this->interests()->count() > 0) {
+            $score += 25;
+        }
+        
+        return $score;
+    }
 }

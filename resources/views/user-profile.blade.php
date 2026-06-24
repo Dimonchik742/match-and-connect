@@ -6,8 +6,7 @@
     <div class="row justify-content-center mt-4 mb-5">
         <div class="col-lg-8">
 
-            <div class="card border-0 shadow-lg mb-4"
-                style="border-radius: 20px; background: #1e1e1e; border: 1px solid #2a2a2a !important;">
+            <div class="glass-card mb-4">
                 <div class="card-body p-4 p-md-5">
 
                     <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start mb-4 pb-4"
@@ -16,10 +15,10 @@
                         <div class="flex-shrink-0 mb-3 mb-md-0 position-relative">
                             @if($user->photo)
                                 <img src="/storage/{{ $user->photo }}" class="rounded-circle object-fit-cover shadow"
-                                    style="width: 140px; height: 140px; border: 3px solid #2d2d2d;" alt="Фото">
+                                    style="width: 140px; height: 140px; border: 3px solid #bb86fc;" alt="Фото">
                             @else
                                 <div class="bg-dark rounded-circle d-flex justify-content-center align-items-center text-muted shadow"
-                                    style="width: 140px; height: 140px; border: 3px solid #2d2d2d;">
+                                    style="width: 140px; height: 140px; border: 3px solid #bb86fc;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor"
                                         class="bi bi-person-fill" viewBox="0 0 16 16">
                                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
@@ -35,7 +34,20 @@
 
                         <div class="flex-grow-1 ms-md-4 text-center text-md-start w-100">
                             <h2 class="fw-bold mb-1 text-white">{{ $user->name }}</h2>
-                            <h5 class="text-muted mb-3">{{ $user->age ?? 'Вік не вказано' }} років</h5>
+                            <h5 class="text-muted mb-2">{{ $user->age ?? 'Вік не вказано' }} років</h5>
+
+                            <!-- Прогрес-бар заповненості профілю -->
+                            <div class="mb-4" style="max-width: 300px; margin: 0 auto;">
+                                @if(Auth::id() != $user->id)
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <small class="text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">ЗАПОВНЕНІСТЬ ПРОФІЛЮ</small>
+                                        <small class="text-primary fw-bold">{{ $user->completeness }}%</small>
+                                    </div>
+                                    <div class="progress" style="height: 6px; background-color: #2d2d2d;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $user->completeness }}%; box-shadow: 0 0 10px rgba(187, 134, 252, 0.8);" aria-valuenow="{{ $user->completeness }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                @endif
+                            </div>
 
                             <div
                                 class="d-flex flex-column flex-sm-row gap-2 justify-content-center justify-content-md-start">
